@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Register - Misty99</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>📝 Create Account</h1>
+      <form id="registerForm">
+        <input id="username" placeholder="Username" minlength="3" maxlength="20" required>
+        <input id="email" type="email" placeholder="Email" required>
+        <input id="password" type="password" placeholder="Password" minlength="6" required>
+        <button type="submit">Register</button>
+      </form>
+      <p id="message" class="message"></p>
+      <p><a href="/">Back to login</a></p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      message.textContent = '';
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+          }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Registration failed.');
+
+        localStorage.setItem('misty99_token', data.token);
+        location.href = '/';
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
