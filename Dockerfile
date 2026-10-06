@@ -1,9 +1,16 @@
 FROM node:20-alpine
+
 WORKDIR /app
+
 COPY package*.json ./
+
 RUN npm ci --omit=dev
-COPY backend ./backend
-COPY frontend ./frontend
-ENV NODE_ENV=production
+
+COPY server.js ./
+COPY index.html ./
+COPY register.html ./
+COPY style.css ./
+
 EXPOSE 8080
-CMD ["npm", "start"]
+
+CMD ["node", "server.js"]
